@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-### XSD/WSDL Generated ###
+### XSD/WSDL/WADL Generated ###
 generated_xsd
 generated_wsdl
+generated_wadl
