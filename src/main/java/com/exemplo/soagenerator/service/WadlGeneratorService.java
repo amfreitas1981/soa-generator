@@ -1,11 +1,16 @@
 package com.exemplo.soagenerator.service;
 
+import com.exemplo.soagenerator.dto.WadlField;
+import com.exemplo.soagenerator.dto.WadlMethod;
+import com.exemplo.soagenerator.dto.WadlParameter;
 import com.exemplo.soagenerator.dto.WadlRequest;
+import com.exemplo.soagenerator.dto.WadlRequestDetails;
+import com.exemplo.soagenerator.dto.WadlResponseDetails;
 import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public class WadlGeneratorService {
@@ -13,49 +18,122 @@ public class WadlGeneratorService {
     private static final String OUTPUT_DIRECTORY = "generated_wadl/";
 
     public String generateWadl(WadlRequest request) {
-        String serviceName = request.getServiceName();
-        String fileName = OUTPUT_DIRECTORY + serviceName + ".wadl";
+        validateRequest(request);
 
+        String fileName = request.getServiceName().trim() + ".wadl";
+        StringBuilder wadlContent = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        wadlContent.append("<application xmlns=\"http://wadl.dev.java.net/2009/02\">\n");
+        wadlContent.append("    <resources base=\"").append(request.getBaseUri()).append("\">\n");
+
+        for (WadlMethod method : request.getMethods()) {
+            wadlContent.append(generateResourceMethod(method));
+        }
+
+        wadlContent.append("    </resources>\n");
+        wadlContent.append("</application>");
+
+        return saveWadlFile(fileName, wadlContent.toString());
+    }
+
+    private void validateRequest(WadlRequest request) {
+        if (request == null || request.getServiceName() == null || request.getServiceName().isEmpty()) {
+            throw new IllegalArgumentException("O nome do serviço não pode ser nulo ou vazio.");
+        }
+        if (request.getBaseUri() == null || request.getBaseUri().isBlank()) {
+            throw new IllegalArgumentException("O baseUri não pode ser nulo ou vazio.");
+        }
+        if (request.getMethods() == null || request.getMethods().isEmpty()) {
+            throw new IllegalArgumentException("A lista de métodos não pode ser nula ou vazia.");
+        }
+    }
+
+    private String generateResourceMethod(WadlMethod method) {
+        StringBuilder methodContent = new StringBuilder();
+        methodContent.append("        <resource path=\"").append(method.getPath()).append("\">\n")
+                .append("            <method name=\"").append(method.getName()).append("\">\n");
+
+        // Adiciona request se existir
+        if (method.getRequest() != null) {
+            methodContent.append(generateRequest(method.getRequest()));
+        }
+
+        // Adiciona response se existir
+        if (method.getResponse() != null) {
+            methodContent.append(generateResponse(method.getResponse()));
+        }
+
+        methodContent.append("            </method>\n")
+                .append("        </resource>\n");
+
+        return methodContent.toString();
+    }
+
+    private String generateRequest(WadlRequestDetails request) {
+        StringBuilder requestContent = new StringBuilder("                <request>\n");
+
+        // Adiciona parâmetros da URL/template se existirem
+        if (request.getParameters() != null && !request.getParameters().isEmpty()) {
+            for (WadlParameter param : request.getParameters()) {
+                requestContent.append(generateParameter(param, "template"));
+            }
+        }
+
+        // Adiciona representation se houver campos no body
+        if (request.getFields() != null && !request.getFields().isEmpty()) {
+            requestContent.append("                    <representation mediaType=\"application/json\">\n");
+            for (WadlField field : request.getFields()) {
+                requestContent.append(generateField(field));
+            }
+            requestContent.append("                    </representation>\n");
+        }
+
+        requestContent.append("                </request>\n");
+        return requestContent.toString();
+    }
+
+    private String generateResponse(WadlResponseDetails response) {
+        StringBuilder responseContent = new StringBuilder("                <response>\n")
+                .append("                    <representation mediaType=\"application/json\">\n");
+
+        if (response.getFields() != null) {
+            for (WadlField field : response.getFields()) {
+                responseContent.append(generateField(field));
+            }
+        }
+
+        responseContent.append("                    </representation>\n")
+                .append("                </response>\n");
+
+        return responseContent.toString();
+    }
+
+    private String generateParameter(WadlParameter param, String style) {
+        return String.format("                    <param name=\"%s\" style=\"%s\" type=\"%s\" required=\"%s\"/>\n",
+                param.getName(),
+                style,
+                param.getType() != null ? param.getType() : "xs:string",
+                param.isRequired());
+    }
+
+    private String generateField(WadlField field) {
+        return String.format("                        <param name=\"%s\" style=\"plain\"%s/>\n",
+                field.getName(),
+                field.getType() != null ? " type=\"" + field.getType() + "\"" : "");
+    }
+
+    private String saveWadlFile(String fileName, String content) {
         File directory = new File(OUTPUT_DIRECTORY);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        StringBuilder wadlBuilder = new StringBuilder();
-        wadlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        wadlBuilder.append("<application xmlns=\"http://wadl.dev.java.net/2009/02\">\n");
-        wadlBuilder.append("    <resources base=\"http://localhost:8080/api/\">\n");
-        wadlBuilder.append("        <resource path=\"" + serviceName.toLowerCase() + "\">\n");
-
-        // Adiciona métodos suportados (GET, POST, PUT, DELETE)
-        for (String method : List.of("GET", "POST", "PUT", "DELETE")) {
-            wadlBuilder.append("            <method name=\"" + method + "\">\n");
-
-            if (method.equals("POST") || method.equals("PUT")) {
-                wadlBuilder.append("                <request>\n");
-                wadlBuilder.append("                    <representation mediaType=\"application/json\">\n");
-                wadlBuilder.append("                        <param name=\"body\" style=\"plain\" required=\"true\"/>\n");
-                wadlBuilder.append("                    </representation>\n");
-                wadlBuilder.append("                </request>\n");
-            }
-
-            wadlBuilder.append("                <response>\n");
-            wadlBuilder.append("                    <representation mediaType=\"application/json\"/>\n");
-            wadlBuilder.append("                </response>\n");
-
-            wadlBuilder.append("            </method>\n");
-        }
-
-        wadlBuilder.append("        </resource>\n");
-        wadlBuilder.append("    </resources>\n");
-        wadlBuilder.append("</application>\n");
-
-        try (FileWriter fileWriter = new FileWriter(fileName)) {
-            fileWriter.write(wadlBuilder.toString());
+        File wadlFile = new File(OUTPUT_DIRECTORY + fileName);
+        try (FileWriter writer = new FileWriter(wadlFile)) {
+            writer.write(content);
         } catch (IOException e) {
-            return "Erro ao gerar WADL: " + e.getMessage();
+            throw new RuntimeException("Erro ao salvar o arquivo WADL: " + e.getMessage(), e);
         }
 
-        return fileName;
+        return "Arquivo WADL gerado com sucesso: " + wadlFile.getAbsolutePath();
     }
 }

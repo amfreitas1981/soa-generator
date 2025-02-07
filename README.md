@@ -35,23 +35,23 @@ A aplicação estará disponível em `http://localhost:8080`.
 - **Requisição (JSON):**
 ```json
 {
-    "serviceName": "PedidoService",
-    "inputFields": [
-        { "name": "idPedido", "type": "int", "required": true },
-        { "name": "cliente", "type": "Cliente", "required": true, "isObject": true }
-    ],
-    "outputFields": [
-        { "name": "status", "type": "string", "required": true }
-    ],
-    "objects": [
-        {
-            "name": "Cliente",
-            "fields": [
-                { "name": "id", "type": "int", "required": true },
-                { "name": "nome", "type": "string", "required": true }
-            ]
-        }
-    ]
+  "serviceName": "PedidoService",
+  "inputFields": [
+    { "name": "idPedido", "type": "int", "required": true },
+    { "name": "cliente", "type": "Cliente", "required": true, "isObject": true }
+  ],
+  "outputFields": [
+    { "name": "status", "type": "string", "required": true }
+  ],
+  "objects": [
+    {
+      "name": "Cliente",
+      "fields": [
+        { "name": "id", "type": "int", "required": true },
+        { "name": "nome", "type": "string", "required": true }
+      ]
+    }
+  ]
 }
 ```
 - **Resposta Esperada:**
@@ -73,14 +73,14 @@ http://localhost:8080/api/xsd/download/PedidoServiceRequest.xsd
 - **Requisição (JSON):**
 ```json
 {
-    "serviceName": "PedidoService",
-    "inputFields": [
-        { "name": "idPedido", "type": "int", "required": true },
-        { "name": "cliente", "type": "Cliente", "required": true, "isObject": true }
-    ],
-    "outputFields": [
-        { "name": "status", "type": "string", "required": true }
-    ]
+  "serviceName": "PedidoService",
+  "inputFields": [
+    { "name": "idPedido", "type": "int", "required": true },
+    { "name": "cliente", "type": "Cliente", "required": true, "isObject": true }
+  ],
+  "outputFields": [
+    { "name": "status", "type": "string", "required": true }
+  ]
 }
 ```
 - **Resposta Esperada:**
@@ -102,23 +102,91 @@ http://localhost:8080/api/wsdl/download/PedidoService.wsdl
 - **Requisição (JSON):**
 ```json
 {
-    "serviceName": "PedidoService",
-    "methods": ["GET", "POST", "PUT", "DELETE"]
+  "baseUri": "http://localhost:8080/api",
+  "serviceName": "ProdutoService",
+  "methods": [
+    {
+      "name": "GET",
+      "path": "/produtos/{id}",
+      "description": "Obtém detalhes de um produto pelo ID",
+      "request": {
+        "parameters": [
+          { "name": "id", "type": "int", "required": true }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "id", "type": "int" },
+          { "name": "nome", "type": "string" },
+          { "name": "preco", "type": "double" }
+        ]
+      }
+    },
+    {
+      "name": "POST",
+      "path": "/produtos",
+      "description": "Cria um novo produto",
+      "request": {
+        "fields": [
+          { "name": "nome", "type": "string", "required": true },
+          { "name": "preco", "type": "double", "required": true }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "id", "type": "int" },
+          { "name": "mensagem", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "PUT",
+      "path": "/produtos/{id}",
+      "description": "Atualiza um produto existente",
+      "request": {
+        "parameters": [
+          { "name": "id", "type": "int", "required": true }
+        ],
+        "fields": [
+          { "name": "nome", "type": "string" },
+          { "name": "preco", "type": "double" }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "mensagem", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "DELETE",
+      "path": "/produtos/{id}",
+      "description": "Exclui um produto pelo ID",
+      "request": {
+        "parameters": [
+          { "name": "id", "type": "int", "required": true }
+        ]
+      },
+      "response": {
+        "fields": [
+          { "name": "mensagem", "type": "string" }
+        ]
+      }
+    }
+  ]
 }
 ```
 - **Resposta Esperada:**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<application xmlns="http://wadl.dev.java.net/2009/02">
-    <resources base="http://localhost:8080/api/">
-        <resource path="pedidoservice">
-            <method name="GET"/>
-            <method name="POST"/>
-            <method name="PUT"/>
-            <method name="DELETE"/>
-        </resource>
-    </resources>
-</application>
+```text
+Arquivo WADL gerado: ProdutoService.wadl
+```
+
+### **6. Baixar Arquivo WADL**
+- **Endpoint:** `GET /wadl/download/{fileName}`
+- **Descrição:** Baixa um arquivo WADL gerado.
+- **Exemplo de uso:**
+```sh
+http://localhost:8080/wadl/download/ProdutoService.wadl
 ```
 
 ## Estrutura do Projeto
@@ -127,7 +195,7 @@ http://localhost:8080/api/wsdl/download/PedidoService.wsdl
 ├── src/main/java/com/exemplo/soagenerator
 │   ├── controller/XsdGeneratorController.java
 │   ├── controller/WsdlGeneratorController.java
-│   ├── controller/WadlController.java
+│   ├── controller/WadlGeneratorController.java
 │   ├── dto/XsdField.java
 │   ├── dto/XsdObject.java
 │   ├── dto/XsdRequest.java
