@@ -2,7 +2,6 @@ package com.exemplo.soagenerator.controller;
 
 import com.exemplo.soagenerator.dto.WsdlRequest;
 import com.exemplo.soagenerator.service.WsdlGeneratorService;
-import com.exemplo.soagenerator.service.XsdGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
