@@ -75,11 +75,36 @@ http://localhost:8080/api/xsd/download/PedidoServiceRequest.xsd
 {
   "serviceName": "PedidoService",
   "inputFields": [
-    { "name": "idPedido", "type": "int", "required": true },
-    { "name": "cliente", "type": "Cliente", "required": true, "isObject": true }
+    {
+      "name": "idPedido",
+      "type": "int",
+      "required": true
+    },
+    {
+      "name": "cliente",
+      "type": "Cliente",
+      "required": true,
+      "isObject": true,
+      "fields": [
+        {
+          "name": "nome",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "cpf",
+          "type": "string",
+          "required": true
+        }
+      ]
+    }
   ],
   "outputFields": [
-    { "name": "status", "type": "string", "required": true }
+    {
+      "name": "status",
+      "type": "string",
+      "required": true
+    }
   ]
 }
 ```
@@ -97,7 +122,7 @@ http://localhost:8080/api/wsdl/download/PedidoService.wsdl
 ```
 
 ### **5. Gerar Arquivo WADL**
-- **Endpoint:** `POST /wadl/generate`
+- **Endpoint:** `POST /api/wadl/generate`
 - **Descrição:** Gera e salva um arquivo `.wadl` para o serviço especificado.
 - **Requisição (JSON):**
 ```json
@@ -121,57 +146,6 @@ http://localhost:8080/api/wsdl/download/PedidoService.wsdl
           { "name": "preco", "type": "double" }
         ]
       }
-    },
-    {
-      "name": "POST",
-      "path": "/produtos",
-      "description": "Cria um novo produto",
-      "request": {
-        "fields": [
-          { "name": "nome", "type": "string", "required": true },
-          { "name": "preco", "type": "double", "required": true }
-        ]
-      },
-      "response": {
-        "fields": [
-          { "name": "id", "type": "int" },
-          { "name": "mensagem", "type": "string" }
-        ]
-      }
-    },
-    {
-      "name": "PUT",
-      "path": "/produtos/{id}",
-      "description": "Atualiza um produto existente",
-      "request": {
-        "parameters": [
-          { "name": "id", "type": "int", "required": true }
-        ],
-        "fields": [
-          { "name": "nome", "type": "string" },
-          { "name": "preco", "type": "double" }
-        ]
-      },
-      "response": {
-        "fields": [
-          { "name": "mensagem", "type": "string" }
-        ]
-      }
-    },
-    {
-      "name": "DELETE",
-      "path": "/produtos/{id}",
-      "description": "Exclui um produto pelo ID",
-      "request": {
-        "parameters": [
-          { "name": "id", "type": "int", "required": true }
-        ]
-      },
-      "response": {
-        "fields": [
-          { "name": "mensagem", "type": "string" }
-        ]
-      }
     }
   ]
 }
@@ -182,11 +156,11 @@ Arquivo WADL gerado: ProdutoService.wadl
 ```
 
 ### **6. Baixar Arquivo WADL**
-- **Endpoint:** `GET /wadl/download/{fileName}`
+- **Endpoint:** `GET /api/wadl/download/{fileName}`
 - **Descrição:** Baixa um arquivo WADL gerado.
 - **Exemplo de uso:**
 ```sh
-http://localhost:8080/wadl/download/ProdutoService.wadl
+http://localhost:8080/api/wadl/download/ProdutoService.wadl
 ```
 
 ## Estrutura do Projeto
@@ -203,17 +177,13 @@ http://localhost:8080/wadl/download/ProdutoService.wadl
 │   ├── service/XsdGeneratorService.java
 │   ├── service/WsdlGeneratorService.java
 │   ├── service/WadlGeneratorService.java
-├── generated_xsd/  # Pasta onde os arquivos XSD gerados são salvos
-├── generated_wsdl/ # Pasta onde os arquivos WSDL gerados são salvos
-├── generated_wadl/ # Pasta onde os arquivos WADL gerados são salvos
+├── generated_xsd/
+├── generated_wsdl/
+├── generated_wadl/
 ├── pom.xml
 ├── README.md
 ```
 
-## Melhorias Futuras
-- Adicionar suporte para namespaces personalizados no XSD e WSDL.
-- Criar uma interface web para interação visual.
-- Melhorar validações e tratamento de erros.
 
 ---
 Desenvolvido para integração com **SOA Suite 12c** 🚀
