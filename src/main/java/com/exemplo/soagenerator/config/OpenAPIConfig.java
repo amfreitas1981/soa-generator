@@ -12,7 +12,7 @@ public class OpenAPIConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API de Produtos")
+                        .title("API para Geração de Arquivos .xsd, .wsdl e .wadl")
                         .version("1.0")
                         .description("Documentação da API de Geração de Arquivos SOA gerada automaticamente pelo Swagger"));
     }

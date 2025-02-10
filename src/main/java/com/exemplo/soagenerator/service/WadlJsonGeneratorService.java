@@ -1,6 +1,11 @@
 package com.exemplo.soagenerator.service;
 
-import com.exemplo.soagenerator.dto.*;
+import com.exemplo.soagenerator.dto.WadlField;
+import com.exemplo.soagenerator.dto.WadlMethod;
+import com.exemplo.soagenerator.dto.WadlParameter;
+import com.exemplo.soagenerator.dto.WadlRequest;
+import com.exemplo.soagenerator.dto.WadlRequestDetails;
+import com.exemplo.soagenerator.dto.WadlResponseDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,7 +51,7 @@ public class WadlJsonGeneratorService {
         }
     }
 
-    private String generateResourceMethod(WadlMethod method) {
+    String generateResourceMethod(WadlMethod method) {
         StringBuilder methodContent = new StringBuilder();
         methodContent.append("        <resource path=\"").append(method.getPath()).append("\">\n");
 
@@ -64,7 +69,7 @@ public class WadlJsonGeneratorService {
         return methodContent.toString();
     }
 
-    private String generateMethodJson(WadlMethod method) throws IOException {
+    String generateMethodJson(WadlMethod method) throws IOException {
         ObjectNode rootNode = objectMapper.createObjectNode();
         ObjectNode methodNode = rootNode.putObject("method");
 
@@ -84,7 +89,7 @@ public class WadlJsonGeneratorService {
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
     }
 
-    private void addRequestToJson(ObjectNode methodNode, WadlRequestDetails request) {
+    void addRequestToJson(ObjectNode methodNode, WadlRequestDetails request) {
         ObjectNode requestNode = methodNode.putObject("request");
 
         // Adiciona parâmetros da URL
@@ -112,7 +117,7 @@ public class WadlJsonGeneratorService {
         }
     }
 
-    private void addResponseToJson(ObjectNode methodNode, WadlResponseDetails response) {
+    void addResponseToJson(ObjectNode methodNode, WadlResponseDetails response) {
         ObjectNode responseNode = methodNode.putObject("response");
         ObjectNode representationNode = responseNode.putObject("representation");
         representationNode.put("mediaType", "application/json");
@@ -138,7 +143,7 @@ public class WadlJsonGeneratorService {
         }
     }
 
-    private String saveWadlFile(String fileName, String content) {
+    String saveWadlFile(String fileName, String content) {
         File directory = new File(OUTPUT_DIRECTORY);
         if (!directory.exists()) {
             directory.mkdirs();

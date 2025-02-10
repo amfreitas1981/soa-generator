@@ -1,8 +1,11 @@
 package com.exemplo.soagenerator.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.List;
 
 public class XsdRequest {
+    @NotBlank(message = "O nome do serviço é obrigatório")
     private String serviceName;
     private List<XsdField> inputFields;
     private List<XsdField> outputFields;

@@ -47,7 +47,7 @@ public class WadlGeneratorService {
         }
     }
 
-    private String generateResourceMethod(WadlMethod method) {
+    String generateResourceMethod(WadlMethod method) {
         StringBuilder methodContent = new StringBuilder();
         methodContent.append("        <resource path=\"").append(method.getPath()).append("\">\n")
                 .append("            <method name=\"").append(method.getName()).append("\">\n");
@@ -68,7 +68,7 @@ public class WadlGeneratorService {
         return methodContent.toString();
     }
 
-    private String generateRequest(WadlRequestDetails request) {
+    String generateRequest(WadlRequestDetails request) {
         StringBuilder requestContent = new StringBuilder("                <request>\n");
 
         // Adiciona parâmetros da URL/template se existirem
@@ -91,7 +91,7 @@ public class WadlGeneratorService {
         return requestContent.toString();
     }
 
-    private String generateResponse(WadlResponseDetails response) {
+    String generateResponse(WadlResponseDetails response) {
         StringBuilder responseContent = new StringBuilder("                <response>\n")
                 .append("                    <representation mediaType=\"application/json\">\n");
 
@@ -107,7 +107,7 @@ public class WadlGeneratorService {
         return responseContent.toString();
     }
 
-    private String generateParameter(WadlParameter param, String style) {
+    String generateParameter(WadlParameter param, String style) {
         return String.format("                    <param name=\"%s\" style=\"%s\" type=\"%s\" required=\"%s\"/>\n",
                 param.getName(),
                 style,
@@ -115,13 +115,13 @@ public class WadlGeneratorService {
                 param.isRequired());
     }
 
-    private String generateField(WadlField field) {
+    String generateField(WadlField field) {
         return String.format("                        <param name=\"%s\" style=\"plain\"%s/>\n",
                 field.getName(),
                 field.getType() != null ? " type=\"" + field.getType() + "\"" : "");
     }
 
-    private String saveWadlFile(String fileName, String content) {
+    String saveWadlFile(String fileName, String content) {
         File directory = new File(OUTPUT_DIRECTORY);
         if (!directory.exists()) {
             directory.mkdirs();

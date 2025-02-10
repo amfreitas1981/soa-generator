@@ -2,6 +2,8 @@ package com.exemplo.soagenerator.service;
 
 import com.exemplo.soagenerator.dto.XsdField;
 import com.exemplo.soagenerator.dto.XsdObject;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+@Service
 public class XsdGeneratorService {
 
     private static final String BASE_DIRECTORY = "generated_xsd/";

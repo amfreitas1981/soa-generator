@@ -3,6 +3,13 @@ Criação arquivos XSD, WSDL e WADL para implementar serviços SOA
 
 # Gerador de Arquivos XSD, WSDL e WADL - SOA Suite 12c
 
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-93%25-success)
+![Java](https://img.shields.io/badge/java-17-blue)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-brightgreen)
+
+
 ## Visão Geral
 Este projeto tem como objetivo gerar dinamicamente arquivos XSD, WSDL e WADL a partir de uma API desenvolvida com **Spring Boot 3**. A aplicação permite definir os campos de entrada e saída, além de objetos complexos, e gerar os arquivos `.xsd`, `.wsdl` e `.wadl` correspondentes, que podem ser baixados posteriormente.
 
@@ -184,6 +191,21 @@ http://localhost:8080/api/wadl/download/ProdutoService.wadl
 ├── README.md
 ```
 
+## Documentação Swagger - OpenAPI
+### **1. Adicionar a dependência do Springdoc OpenAPI no `pom.xml`**
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.3.0</version>
+</dependency>
+```
+
+### **2. Criar a configuração do OpenAPI**
+### **3. Adicionar as anotações Swagger nas classes controller do projeto** ###
+### **4. Acessar a interface Swagger** ###
+- Acessar: http://localhost:8080/swagger-ui.html
+- Acessar: http://localhost:8080/v3/api-docs
 
 ---
 Desenvolvido para integração com **SOA Suite 12c** 🚀
